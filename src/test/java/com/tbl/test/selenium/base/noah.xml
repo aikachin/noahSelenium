@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--中间件消息启动模块配置-->
+<loki>
+	<base>
+		<name>Noah</name>
+		<savestatus>true</savestatus>
+		<log>SysLog</log>
+	</base>
+	<modules>
+		<module>
+			<name>NettyMod</name>										<!--消息转发处理模块-->
+			<class>com.techbloom.netty.server.NettyTask</class> 		<!--消息处理类-->
+			<ifLoad>1</ifLoad>											<!--是否加载 1:是 0:否-->
+			<loadonstartup>1</loadonstartup>							<!--启动加载顺序-->
+			<threadsize>100</threadsize>								<!--处理线程池大小-->
+			<queueName>noah.msg.nettyMod</queueName>					<!--队列名称-->
+			<isPersistent>0</isPersistent>								<!--是否持久化 1:是 0:否-->
+			<isStartModule>0</isStartModule>							<!--是否标记消息属性，分布式下使用-->
+			<properties>/nettymod.properties</properties>	<!--配置文件-->
+		</module>	
+		
+		<module>
+			<name>DeviceSetTask</name>
+			<class>com.techbloom.noah.deviceset.DeviceSetTask</class> 
+			<ifLoad>1</ifLoad>
+			<loadonstartup>0</loadonstartup>
+			<threadsize>100</threadsize>
+			<queueName>noah.msg.deviceSet</queueName>
+			<isPersistent>0</isPersistent>
+		</module> 
+		
+		<!--UWB处理模块-->	
+		<module>
+			<name>UwbServerTask</name>
+			<class>com.techbloom.noah.dserver.UwbServerTask</class> 
+			<loadonstartup>0</loadonstartup>
+			<ifLoad>1</ifLoad>
+			<loadonstartup>0</loadonstartup>
+			<threadsize>200</threadsize>
+			<queueName>noah.msg.uwbServer</queueName>
+			<isPersistent>0</isPersistent>
+		</module>
+		<!--UWBSET处理模块-->
+		<module>
+			<name>UwbSetServerTask</name>
+			<class>com.techbloom.noah.dserver.UwbSetServerTask</class>
+			<loadonstartup>0</loadonstartup>
+			<ifLoad>1</ifLoad>
+			<loadonstartup>0</loadonstartup>
+			<threadsize>200</threadsize>
+			<queueName>noah.msg.uwbSetServer</queueName>
+			<isPersistent>0</isPersistent>
+		</module>
+		<!--运维日志处理模块-->
+	<!--	<module>
+			<name>PerationServerTask</name>
+			<class>com.techbloom.noah.dserver.PerationServerTask</class> 
+			<ifLoad>1</ifLoad>
+			<loadonstartup>0</loadonstartup>
+			<threadsize>100</threadsize>
+			<queueName>noah.msg.perationServer</queueName>
+			<isPersistent>0</isPersistent>
+		</module> -->
+		
+		<!--规则引擎处理模块-->
+	<!--	<module>
+			<name>PerationTransmitKafka</name>
+			<class>com.techbloom.kafka.task.PerationTransmitKafka</class> 
+			<ifLoad>1</ifLoad>
+			<loadonstartup>0</loadonstartup>
+			<threadsize>100</threadsize>
+			<queueName>noah.msg.PerationTransmitKafka</queueName>
+			<isPersistent>0</isPersistent>
+		</module>   -->
+		
+	</modules>
+</loki>
