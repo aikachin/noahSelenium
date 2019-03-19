@@ -71,7 +71,7 @@ public class LoginTest {
         Thread.sleep(2000);
     }
 
-    @Test
+    //@Test
     // Case2.密码错误，登录失败
     public void testLoginFailed() throws Exception {
         System.out.println("------Case2.开始测试密码错误，登录失败...");
@@ -92,7 +92,7 @@ public class LoginTest {
         Thread.sleep(2000);
     }
 
-    @Test
+    //@Test
     // Case3.不输入密码，登录失败
     public void testLoginFailed2() throws Exception {
     	System.out.println("------Case3.开始测试不输入密码，登录失败..");
@@ -112,7 +112,7 @@ public class LoginTest {
         Thread.sleep(2000);
     }
 
-    @Test
+    //@Test
     // Case4.用户名错误，登录失败
     public void testLoginFailed3() throws Exception {
     	System.out.println("------Case4.开始测试用户名错误，登录失败..");
@@ -132,7 +132,7 @@ public class LoginTest {
         Thread.sleep(2000);
     }
 
-    @Test
+    //@Test
     // Case5.用户名为空，登录失败
     public void testLoginFailed4() throws Exception {
     	System.out.println("------Case5.开始测试用户名为空，登录失败..");
