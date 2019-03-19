@@ -12,8 +12,8 @@ public class constantsOfNoah {
     public static final String CHROME_DRIVER = "f:/software/webdriver/chromedriver.exe";
 
     // Noah首页
-//    public static final String URL_OF_NOAH = "http://localhost:18080/noah_web";
-    public static final String URL_OF_NOAH = "http://192.168.1.57:8081/noah_web";
+    public static final String URL_OF_NOAH = "http://localhost:18080/noah_web";
+//    public static final String URL_OF_NOAH = "http://192.168.1.57:8081/noah_web";
     // mainFrame（页面右侧主内容区）
     public static final String MAIN_FRM_ID = "mainFrame";
 
