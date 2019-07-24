@@ -21,10 +21,9 @@
 	<classpathentry kind="con" path="org.testng.TESTNG_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.8.0_151"/>
 	<classpathentry kind="lib" path="E:/software/apache-maven-3.5.0/repo/org/testng/testng/6.11/testng-6.11.jar"/>
-	<classpathentry kind="lib" path="E:/software/apache-maven-3.5.0/repo/velocity/velocity-dep/1.4/velocity-dep-1.4.jar"/>
+	<classpathentry kind="lib" path="E:/software/apache-maven-3.5.0/repo/com/google/inject/guice/4.1.0/guice-4.1.0.jar"/>
 	<classpathentry kind="lib" path="E:/software/apache-maven-3.5.0/repo/reportng-1.1.4.jar"/>
 	<classpathentry kind="lib" path="E:/software/apache-maven-3.5.0/repo/log4j/log4j/1.2.17/log4j-1.2.17.jar"/>
-	<classpathentry kind="lib" path="E:/software/apache-maven-3.5.0/repo/guice-4.0.jar"/>
-	<classpathentry kind="lib" path="E:/software/apache-maven-3.5.0/repo/junit/junit/4.11/junit-4.11.jar"/>
+	<classpathentry kind="lib" path="E:/software/apache-maven-3.5.0/repo/velocity/velocity/1.4/velocity-1.4.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -1,9 +1,13 @@
 package com.tbl.test.selenium.util;
 
 import org.openqa.selenium.By;
+
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import static com.tbl.test.selenium.util.BaseUtils.print;
 
 /**
  * @Auther: Aikachin
@@ -49,13 +53,13 @@ public class WebDriverUtil {
      * @return 出现返回true 否则返回false
      */
     public static boolean waitForElementVisible(WebDriver webDriver, final By by, int seconds) {
-//        try {
+        try {
             new WebDriverWait(webDriver, seconds).until(ExpectedConditions.visibilityOfElementLocated(by));
 
             return true;
-//        } catch (Exception e) {
-//            return false;
-//        }
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
@@ -80,4 +84,36 @@ public class WebDriverUtil {
 //    来源：CSDN
 //    原文：https://blog.csdn.net/xian312854159/article/details/43703551
 //    版权声明：本文为博主原创文章，转载请附上博文链接！
+    
+    /**
+     * 等待指定元素文本出现
+     *
+     * @param xpath
+     * @param text
+     * @return
+     * @throws Exception
+     */
+    public static boolean isDisplay(WebDriver webDriver, final String xpath, final String text) {
+        print("等待指定元素文本显示");
+        boolean result = false;
+        int attempts = 0;
+        while (attempts < 5) {
+            try {
+                attempts++;
+                print("扫描元素开始,第" + attempts + "次");
+                result = new WebDriverWait(webDriver, 30)
+                        .until(new ExpectedCondition<Boolean>() {
+                            public Boolean apply(WebDriver webDriver) {
+                                return webDriver.findElement(By.xpath(xpath)).getText().contains(text);
+                            }
+                        });
+                print("扫描元素结束");
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return result;
+    }
+    
 }

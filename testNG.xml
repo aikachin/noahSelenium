@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="com.tbl.test">
+  <test thread-count="5" name="selenium">
+    <classes>
+    <!--
+      <class name="com.tbl.test.selenium.LoginTest"/>
+      <class name="com.tbl.test.selenium.RolePageTest"/>
+    -->
+      
+      <class name="com.tbl.test.selenium.test.TestByDataDrive"/>
+    <!--  <class name="com.tbl.test.selenium.UserPageTest"/>
+      <class name="com.tbl.test.selenium.LoginAddRoleLogout"/>
+      <class name="com.tbl.test.selenium.AppTest"/>
+      <class name="com.tbl.test.selenium.testKatalon"/> -->
+    </classes>
+  </test> <!-- selenium -->
+</suite> <!-- com.tbl.test -->
