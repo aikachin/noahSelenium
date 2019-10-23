@@ -4,10 +4,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import static com.tbl.test.selenium.util.BaseUtils.*;
 import static org.testng.Assert.assertEquals;
 import static com.tbl.test.selenium.util.WebDriverUtil.waitForElementVisible;
 
@@ -15,9 +11,9 @@ import java.rmi.RemoteException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class WebElementOperation extends BasePage {
+class WebElementOperation extends BasePage {
 	
-	public static WebElement getElement(String type, String element) {
+	private static WebElement getElement(String type, String element) {
 		if (isNull(type) || isNull(element)) {
 			printErr("元素类型为空或元素值为空！");
 			return null;
@@ -58,7 +54,7 @@ public class WebElementOperation extends BasePage {
 	}
 	
 	
-	public static By getElementBy(String type, String element) {
+	public static By getElementBy(String type, String element) throws Exception {
 		if (isNull(type) || isNull(element)) {
 			printErr("元素类型为空或元素值为空！");
 			return null;
@@ -94,7 +90,7 @@ public class WebElementOperation extends BasePage {
 	}
 	
 	
-	public static int elementAction(StepModel stepModel) {
+	public static int elementAction(StepModel stepModel) throws Exception {
 //		WebDriverWait wait = new WebDriverWait(driver, 10);
 		String action = stepModel.getAction();
 		String value = stepModel.getValue();
@@ -112,10 +108,16 @@ public class WebElementOperation extends BasePage {
 			webElement.clear();
 //			webElement.click();	//sendKeys感觉不需要click操作，暂且去除。起因：在使用导入rfid设备时无法点击该元素，只需直接上传文件即可。
 			
-			//如果包括random，则进行随机数拼接处理
+			// 如果包括random，则进行随机数拼接处理
 	    	if (value.contains("random(")) {
 	    		value = getRandomNum(value);
 	    	}
+			// 如果是@file=开头的，即表示是选取文件，进行项目根目录的拼接处理
+	    	if (value.startsWith("@file=")) {
+	    		value = rootPath + "\\" + value.substring(6);
+//				print(value);
+	    	}
+
 			webElement.sendKeys(value);
 		} else if("keyboard".equals(action)) {
 			switch (value) {  // 未补充完整
@@ -129,7 +131,9 @@ public class WebElementOperation extends BasePage {
 				webElement.sendKeys(Keys.DOWN);
 				break; 
 			case "Keys.SPACE":
-				webElement.sendKeys(Keys.SPACE);
+				if (webElement != null) {
+					webElement.sendKeys(Keys.SPACE);
+				}
 				break; 
 			case "Keys.BACK_SPACE":
 				webElement.sendKeys(Keys.BACK_SPACE);
@@ -219,16 +223,19 @@ public class WebElementOperation extends BasePage {
 
     	String retValue = null;
 		int randomNum = 0;
+		// 获取random(num)内数字的起始下标
 		int index = value.indexOf("random(") + 7;
 		try {
 			// 获取()括号内的随机数范围
     		int range = Integer.parseInt(value.substring(index, value.length() - 1));
+    		// 根据随机数范围生成相应位数的随机数（比如random(1000)，则返回100-999的3位数）
     		randomNum = (int) (Math.random()*range/10*9 + range/10);
 //        	print(randomNum);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
+		// 将固定字符和获得的随机数进行拼接，得到最后的字符串
     	if (!value.startsWith("random")) {
    			retValue = value.substring(0, value.indexOf("random(") - 1) + String.valueOf(randomNum);
        	} else {

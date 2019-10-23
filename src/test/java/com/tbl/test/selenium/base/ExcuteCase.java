@@ -7,108 +7,102 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import org.testng.Reporter;
+
 import static com.tbl.test.selenium.util.BaseUtils.*;
 
 public class ExcuteCase {
 
     // 公共用例（比如登陆操作等）
-    static List<CaseModel> publicCaseList;
+    private static List<CaseModel> publicCaseList;
 
-    static String recoverSql = "";
-    static StepModel step;
+    private static String recoverSql = "";
+    private static StepModel step;
 
     /**
-    * 执行case的主要方法
-     * 
-     * @param caseModel
-     * @return
+     * 执行case的主要方法
+     *
+     * @param caseModel 用例模板，包含用例名称和用例步骤
+     * @return ret 备用返回值
      */
-    public static Object[] excuteCase(CaseModel caseModel) {
+    public static int excuteCase(CaseModel caseModel) {
+    	int ret = 0;
         for (int i = 0; i < caseModel.getStepModels().size(); i++) {
             StepModel stepModel = caseModel.getStepModels().get(i);
             String object = stepModel.getObject();
-            if (isNotNull(stepModel.getPrecondition())) {
-                for (CaseModel caseModel2 : publicCaseList) {
-                    if (stepModel.getPrecondition().equals(caseModel2.getCaseName())) {
-                        excuteCase(caseModel2);
+            try {
+                if (isNotNull(stepModel.getPrecondition())) {
+                    for (CaseModel caseModel2 : publicCaseList) {
+                        if (stepModel.getPrecondition().equals(caseModel2.getCaseName())) {
+                            excuteCase(caseModel2);
+                        }
                     }
                 }
-            }
 
-            if ("driver".equals(object)) {
-                // 如果是driver，则执行浏览器驱动动作
-                DriverOperation.action(stepModel);
-            } else if ("element".equals(object)) {
-                // 如果是element，则执行测试用例的元素操作
-                WebElementOperation.elementAction(stepModel);
-            } else if ("elementAvailable".equals(object)) {
-                int retCode = WebElementOperation.ifElementAvailable(stepModel);
-                if (1 == retCode) {
-                    // 1:如果不存在元素，则执行excel case中接下来的一行内容（视情况而定）
-                    continue;
-                } else if (0 == retCode) {
-                    // 0:如果存在元素，则跳过excel case中接下来的一行内容（视情况而定）
-                    i++;
-                } else {
-                    // -1:异常返回，终止测试
-                    printErr("WebElementOperation.ifElementAvailable(StepModel stepModels) 发生异常, 返回-1!");
-                }
-            } else if ("sleep".equals(object)) {
-                try {
+                if ("driver".equals(object)) {
+                    // 如果是driver，则执行浏览器驱动动作
+                    DriverOperation.action(stepModel);
+                } else if ("element".equals(object)) {
+                    // 如果是element，则执行测试用例的元素操作
+                	try {
+                		WebElementOperation.elementAction(stepModel);
+                	}catch(Exception e) {
+                		sleep(1000);
+                		WebElementOperation.elementAction(stepModel);
+                	}
+                    
+                } else if ("elementAvailable".equals(object)) {
+                    int retCode = WebElementOperation.ifElementAvailable(stepModel);
+                    if (1 == retCode) {
+                        // 1:如果不存在元素，则执行excel case中接下来的一行内容（视情况而定）
+                    } else if (0 == retCode) {
+                        // 0:如果存在元素，则跳过excel case中接下来的一行内容（视情况而定）
+                        i++;
+                    } else {
+                        // -1:异常返回，终止测试
+                        printErr("WebElementOperation.ifElementAvailable(StepModel stepModels) 发生异常, 返回-1!");
+                    }
+                } else if ("sleep".equals(object)) {
                     sleep(Integer.parseInt(stepModel.getValue()));
-                } catch (NumberFormatException e) {
-                    print("caseName：" + caseModel.getCaseName());
-                    print("step:" + stepModel.getStep());
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    print("caseName：" + caseModel.getCaseName());
-                    print("step:" + stepModel.getStep());
-                    e.printStackTrace();
-                }
-                // 如果类型是"backupData"，则开始备份数据库
-            } else if ("backupData".equals(object)) {
-                try {
+                } else if ("backupData".equals(object)) {
+                    // 如果类型是"backupData"，则开始备份数据库
                     backupMysql(stepModel);
-                } catch (Exception e) {
-                    print("caseName：" + caseModel.getCaseName());
-                    print("step:" + stepModel.getStep());
-                    e.printStackTrace();
-                }
-
-                // 如果类型是"recoverData"，则开始还原上面备份的数据库
-            } else if ("recoverData".equals(object)) {
-                try {
+                } else if ("recoverData".equals(object)) {
+                    // 如果类型是"recoverData"，则开始还原上面备份的数据库
                     recoverMysql(stepModel);
-                } catch (Exception e) {
-                    print("caseName：" + caseModel.getCaseName());
-                    print("step:" + stepModel.getStep());
-                    e.printStackTrace();
                 }
+//                Reporter.log(caseModel.getCaseName()+" 执行成功！");
+            } catch (Exception e) {
+            	ret = 1;
+                print("caseName:" + caseModel.getCaseName());
+                print("stepNum:" + stepModel.getStep());
+                Reporter.log("请检查："+caseModel.getCaseName()+":"+ stepModel.getStep());
+                e.printStackTrace();
             }
-
         }
-        return null;
+        Reporter.log(caseModel.getCaseName()+" 执行成功！");
+
+        return ret;
 
     }
 
     /**
      * 数据库备份
-     * 
+     *
      * @param stepModel 测试步骤stepModel中记录需要备份的数据库服务器信息，数据库和表对象，以及sql脚本存放目录
-     * @throws Exception
+     * @throws Exception 数据库备份失败时抛出异常
      */
-    public static void backupMysql(StepModel stepModel) throws Exception {
+    private static void backupMysql(StepModel stepModel) throws Exception {
         Runtime rt = Runtime.getRuntime();
         Process pro = rt.exec(getBackupCommand(stepModel));
         BufferedReader br = new BufferedReader(new InputStreamReader(pro.getErrorStream()));
-        String errorLine = null;
+        String errorLine;
         while ((errorLine = br.readLine()) != null) {
             print(errorLine);
         }
         br.close();
         int result = pro.waitFor();
         if (result != 0) {
-//			print("caseName：" + caseModel.getCaseName());
             print("step:" + stepModel.getStep());
             throw new Exception("数据库备份失败！");
         }
@@ -118,14 +112,14 @@ public class ExcuteCase {
 
     /**
      * 数据库还原
-     * 
-     * @throws Exception
+     *
+     * @throws Exception 数据库还原失败时抛出异常
      */
-    public static void recoverMysql(StepModel stepModel) throws Exception {
+    private static void recoverMysql(StepModel stepModel) throws Exception {
         Runtime rt = Runtime.getRuntime();
         Process pro = rt.exec(getRecoverCommand(stepModel));
         BufferedReader br = new BufferedReader(new InputStreamReader(pro.getErrorStream()));
-        String errorLine = null;
+        String errorLine;
         while ((errorLine = br.readLine()) != null) {
             print(errorLine);
         }
@@ -140,9 +134,9 @@ public class ExcuteCase {
 
     /**
      * 获取MySQL备份的命令
-     * 
-     * @param StepModel 测试步骤
-     * @return
+     *
+     * @param stepModel 测试步骤
+     * @return String[] 备份时用的SQL脚本
      */
     private static String[] getBackupCommand(StepModel stepModel) {
         // 获取需要备份的表名
@@ -158,7 +152,7 @@ public class ExcuteCase {
             backupDir = backupDir + File.separator;
         }
         String[] cmd = new String[3];
-        String time = new SimpleDateFormat("yyMMddHHmm").format(new Date()).toString();
+        String time = new SimpleDateFormat("yyMMddHHmm").format(new Date());
         // 获取操作系统名称
         String os = System.getProperties().getProperty("os.name");
         print(os);
@@ -176,20 +170,20 @@ public class ExcuteCase {
         arg.append("mysqldump ");
         // 服务器地址-h
         String[] serverConn = stepModel.getElement().split(","); // 获取数据库服务器信息，包括IP，账号，密码，和数据库名。全部写在element中，“,”隔开
-                                                                 // eg：192.168.1.64,root,123456,noah_v4.2
-        arg.append("-h" + serverConn[0] + " ");
+        // eg：192.168.1.64,root,123456,noah_v4.2
+        arg.append("-h").append(serverConn[0]).append(" ");
         // 端口号-P，默认3306
         arg.append("-P3306 ");
         // 账号-u
-        arg.append("-u" + serverConn[1] + " ");
+        arg.append("-u").append(serverConn[1]).append(" ");
         // 密码-p
-        arg.append("-p" + serverConn[2] + " ");
+        arg.append("-p").append(serverConn[2]).append(" ");
         // 指定字符集--default-character-set=
         arg.append("--default-character-set=utf8 ");
 
         // 指定需要导出的数据库名称，可以空格隔开
         arg.append("-B ");
-        arg.append(serverConn[3] + " ");
+        arg.append(serverConn[3]).append(" ");
 
         // 当表内容非空时，导出指定表——可以导出多个表到同一sql脚本中，table间默认是用“,”隔开的
         if (isNotNull(tables)) {
@@ -201,7 +195,7 @@ public class ExcuteCase {
             arg.append("-r");
             arg.append(backupDir);
             tables = tables.replaceAll(" ", "+"); // 将多个table之间的空格用“&”隔开，用作保存的sql文件名
-            arg.append(tables + "_");
+            arg.append(tables).append("_");
             arg.append(time);
             arg.append(".sql");
             recoverSql = backupDir + tables + "_" + time + ".sql";
@@ -227,7 +221,7 @@ public class ExcuteCase {
             // 设置备份路径
             arg.append("-r");
             arg.append(backupDir);
-            arg.append(serverConn[3] + "_");
+            arg.append(serverConn[3]).append("_");
             arg.append(time);
             arg.append(".sql");
 
@@ -243,11 +237,11 @@ public class ExcuteCase {
 
     /**
      * 获取MySQL恢复的命令
-     * 
-     * @param StepModel 测试步骤
-     * @return
+     *
+     * @param stepModel 测试步骤
+     * @return String[] 恢复数据库用的SQL脚本
      */
-    public static String[] getRecoverCommand(StepModel stepModel) {
+    private static String[] getRecoverCommand(StepModel stepModel) {
         //
         String[] cmd = new String[3];
         String os = System.getProperties().getProperty("os.name");
@@ -263,16 +257,16 @@ public class ExcuteCase {
         arg.append("mysql ");
         // 服务器地址-h
         String[] serverConn = stepModel.getElement().split(","); // 获取数据库服务器信息，包括IP，账号，密码，和数据库名。全部写在element中，“,”隔开
-                                                                 // eg：192.168.1.64,root,123456,noah_v4.2
-        arg.append("-h" + serverConn[0] + " ");
+        // eg：192.168.1.64,root,123456,noah_v4.2
+        arg.append("-h").append(serverConn[0]).append(" ");
         // 端口号-P，默认3306
         arg.append("-P3306 ");
         // 账号-u
-        arg.append("-u" + serverConn[1] + " ");
+        arg.append("-u").append(serverConn[1]).append(" ");
         // 密码-p
-        arg.append("-p" + serverConn[2] + " ");
+        arg.append("-p").append(serverConn[2]).append(" ");
         // 目标数据库名称
-        arg.append(serverConn[3] + " ");
+        arg.append(serverConn[3]).append(" ");
         arg.append("< ");
         arg.append(recoverSql);
         cmd[2] = arg.toString();
@@ -281,8 +275,7 @@ public class ExcuteCase {
         }
         return cmd;
     }
-    
-    
+
 
     /**
      * @return the publicCaseList

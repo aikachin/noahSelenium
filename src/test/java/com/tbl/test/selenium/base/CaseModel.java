@@ -74,18 +74,60 @@ public class CaseModel {
 			}
 			
 			CaseModel caseModel = new CaseModel();
-			// 设定第一页为公共用例，后面为普通用例
 			int sheetIndex = 0;
-			switch (caseType) {
-			case PUBLIC_CASE:
-				sheetIndex = 0;
-				break;
-			case BUSINESS_CASE:
-				sheetIndex = 1;
-				break;
-			default:
-				break;
+			// 设定第一页为公共用例，后面为普通用例
+			if(path.indexOf("device")!=-1) {
+				switch (caseType) {
+				case PUBLIC_CASE:
+					sheetIndex = 0;
+					break;
+				case BUSINESS_CASE:
+					sheetIndex = 1;
+					break;
+				case DEVICE_RFID:   //适用于noah-device
+					sheetIndex = 3;
+					break;
+				case DEVICE_LMESH:
+					sheetIndex = 4;
+					break;
+				case DEVICE_PTL:
+					sheetIndex = 5;
+					break;
+				case DEVICE_HMESH:
+					sheetIndex = 6;
+					break;
+				case DEVICE_UWB:
+					sheetIndex = 7;
+					break;
+				case DEVICE_OTHER:
+					sheetIndex = 8;
+					break;
+				default:
+					break;
+				}
 			}
+			if(path.indexOf("system")!=-1) {
+				switch (caseType) {
+				case PUBLIC_CASE:
+					sheetIndex = 0;
+					break;
+				case BUSINESS_CASE:
+					sheetIndex = 1;
+					break;
+				case USER_CASE:   //适用于noah-system
+					sheetIndex = 3;
+					break;
+				case ROLE_CASE:
+					sheetIndex = 4;
+					break;
+				case DEPARTMENT_CASE:
+					sheetIndex = 5;
+					break;
+				default:
+					break;
+				}
+			}
+			
 			
 		  // 获取excel工作表对象
 			Sheet sheet = wb.getSheetAt(sheetIndex);

@@ -1,45 +1,84 @@
 package com.tbl.test.selenium.base;
 
+import com.tbl.test.selenium.util.BaseUtils;
+
 /**
  * @Auther: Aikachin
  * @Date: 2018/11/9 13:58
  * @Description: 记录常量：主要包括Noah页面元素
  * @Modified by: Aikachin 2019/1/2
  */
-public class constantsOfNoah {
+public class constantsOfNoah extends BaseUtils {
 
     // Chrome driver路径
-    public static final String CHROME_DRIVER = "f:/software/webdriver/chromedriver.exe";
+//    public static final String CHROME_DRIVER = "/usr/java/apache-tomcat-8.5.30/webapps/jenkins/workspace/wms/ref/webdriver/chromedriver";
+//    public static final String CHROME_DRIVER = "E:\\software\\Git-repo\\noahSelenium\\ref\\webdriver\\chromedriver.exe";
+//    public static final String CHROME_DRIVER = "./ref/webdriver/chromedriver.exe";
+	
 
+//    public static final String CHROME_DRIVER = "../ref/webdriver/chromedriver.exe";	// jenkins用这个
+	public static final String CHROME_DRIVER = getValue("CHROME_DRIVER_PATH");
+    
+    // chrome drvier和chrome浏览器版本对应关系参考：
+    // https://blog.csdn.net/u013783095/article/details/79851194
+    // 下载参考： http://npm.taobao.org/mirrors/chromedriver/
+
+    // Firefox gecko driver路径
+    public static final String GECKO_DRIVER = getValue("GECKO_DRIVER_PATH");
+    
+    // Microsoft Edge driver路径
+    public static final String EDGE_DRIVER = getValue("EDGE_DRIVER_PATH");
+    
+    // driver get method
+    public static final String DRIVER_GET_METHOD = "get";
+    
+    // driver navigate refresh__refresh method
+    public static final String DRIVER_NAVIGATE_REFRESH = "refresh";
+    
+    // driver switchTo method - switchTo
+    public static final String DRIVER_SWITCHTO = "switchTo";
+    
+    // driver switchTo -- defaultContent
+    public static final String DRIVER_SWTH_DFLT_CONT = "defaultContent";
+    
+    // driver switchTo -- frame
+    public static final String DRIVER_SWTH_FRAME = "frame";
+    
+    // driver switchTo -- frame by div_className
+    public static final String DRIVER_SWTH_DIV_FRAME = "frameClassName";
+    
     // Noah首页
-    public static final String URL_OF_NOAH = "http://localhost:18080/noah_web";
-//    public static final String URL_OF_NOAH = "http://192.168.1.57:8081/noah_web";
+//    public static final String URL_OF_NOAH = "http://localhost:18080/noah_web";
+    public static final String URL_OF_NOAH = getValue("URL_OF_NOAH");
     // mainFrame（页面右侧主内容区）
-    public static final String MAIN_FRM_ID = "mainFrame";
+    public static final String MAIN_FRM_ID = getValue("MAIN_FRM_ID");
 
     // Noah登录页用户名输入框ID
-    public static final String LOGIN_USER_ID = "loginname";
+    public static final String LOGIN_USER_ID = "loginname";	//getValue("LOGIN_USER_ID");
     // Noah登录页密码输入框ID
-    public static final String LOGIN_PWD_ID = "password";
+    public static final String LOGIN_PWD_ID = "password";	//getValue("LOGIN_PWD_ID");
     // Noah登录页登录按钮 class
     public static final String LOGIN_BTN_CL = "submit_btn";
     // Noah用户名1
-    public static final String USER = "noah";
+    public static final String USER = getValue("USER");
     // Noah密码1
-    public static final String PWD = "123456";
+    public static final String PWD = getValue("PWD");
     // Noah用户名2
-    public static final String USER_ADMIN = "admin";
+    public static final String USER_ADMIN = getValue("USER_ADMIN");
     // Noah密码2
-    public static final String PWD_ADMIN = "sonriku";
+    public static final String PWD_ADMIN = getValue("PWD_ADMIN");
 
+    
+    // Noah登陆后首页的新设备提醒弹框
+    public static final String NEWDEVICE_ALERT_XP = "(.//*[normalize-space(text()) and normalize-space(.)='Toggle sidebar'])[1]/preceding::span[1]";
     // Noah首页导航栏ID
-    public static final String NAV_ID = "navbar";
+    public static final String NAV_ID = getValue("NAV_ID");
     // Noah首页导航栏配置
-    public static final String CONF_XP = "/html/body/div[1]/div/div[2]/ul/li[3]/a";
+    public static final String CONF_XP = "/html/body/div[1]/div/div[2]/ul/li[3]/a";	//getValue("CONF_XP");
     // Noah首页导航栏配置--退出登录
-    public static final String LOGOUT_XP = "/html/body/div[1]/div/div[2]/ul/li[3]/ul/li[5]/a";
+    public static final String LOGOUT_XP = "/html/body/div[1]/div/div[2]/ul/li[3]/ul/li[5]/a";	//getValue("LOGOUT_XP");
 
-
+    
 
     // 系统管理菜单xpath
     public static final String SYS_MNG_XP = "//*[@id=\"lm1\"]/a";
@@ -99,10 +138,18 @@ public class constantsOfNoah {
     public static final String ROLE_MNG_XP = "//*[@id=\"z12\"]/a";
     // 角色管理--添加按钮xpath
     public static final String ROLE_ADD_XP = "//*[@id=\"__tb__01\"]/div[1]/div";
+    // 角色管理--编辑按钮xpath
+    public static final String ROLE_MODF_XP = "//*[@id=\"__tb__01\"]/div[2]/div";
+    // 角色管理--删除按钮xpath
+    public static final String ROLE_DEL_XP = "//*[@id=\"__tb__01\"]/div[3]/div";
+    // 角色管理--查询按钮xpath
+    public static final String ROLE_QUR_XP = "//*[@id=\"__tb__01\"]/div[4]/div";
+    
+  
     // 角色管理--添加角色div class
     public static final String ROLE_ADD_DIV_CL = "idlg-content";
-    // 角色管理--添加角色frame tag
-    public static final String ROLE_ADD_FRM_TAG = "iframe";
+    // web element frame tag
+    public static final String WEB_ELE_TAG_FRM = "iframe";
     // 角色管理--添加角色弹框--角色名称
     public static final String ROLE_NAME_XP = "//*[@id=\"roleName\"]";
     // 角色管理--添加角色弹框--新增权限checkbox
@@ -137,12 +184,31 @@ public class constantsOfNoah {
     public static final String ROLE_ADD_SBMT_CFM_CL = "idlg-btn";
 
 
+    // 角色管理--角色查询div class
+    public static final String ROLE_QUR_DIV_CL = "idlg-content";
+    // 角色管理--角色查询弹框--角色名称id
+    public static final String ROLE_QUR_NAME_ID = "roleName";
+    // 角色管理--角色查询弹框--确定按钮xp
+    public static final String ROLE_QUR_CFM_XP = "//*[@id=\"queryForm\"]/ul/li[2]/div/div[1]";
 
+    
+    // 角色管理--角色删除div class
+    public static final String ROLE_DEL_DIV_CL = "fui-idialog";
+    // 角色管理--角色删除弹框--确定按钮xp
+    public static final String ROLE_DEL_CFM_CL = "idlg-btn-focus";
+    
+    
+    // 角色管理--列表字段--第一条checkbox xpath
+    public static final String ROLE_LIST_CHKBX_1ST_XP = "//*[@id=\"1\"]/td[1]";
+    // 角色管理--列表字段--第一条角色名称xpath
+    public static final String ROLE_LIST_NAME_1ST_XP = "//*[@id=\"1\"]/td[2]";
+    
+//    roleName
+  //*[@id="queryForm"]/ul/li[2]/div/div[1]
 
-
-
-
-
-
+    public static String getValue(String property) {
+    	String value = properties.getProperty(property);
+    	return value;
+    }
 
 }

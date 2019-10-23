@@ -1,15 +1,17 @@
 package com.tbl.test.selenium.util;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Properties;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * @Auther: Aikachin
@@ -125,8 +127,22 @@ public class BaseUtils {
     		return true;
     	}
     }
-    
-    
+
+
+	/**
+	 * 判断List<LinkedHashMap>类型参数是否非空
+	 * @param list
+	 * @return boolean
+	 */
+	public static boolean isNotNull(List<Map> list) {
+		if (list == null || 0 == list.size()) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+
     /**
      * 线程睡眠一段时间
      * @param milliseconds
@@ -142,7 +158,7 @@ public class BaseUtils {
      * @throws IOException 
      * @throws FileNotFoundException 
      */
-	public static Object getValue(String property) throws FileNotFoundException, IOException {
+	public static Object getValue(String property) {
     	String value = properties.getProperty(property);
     	return value;
     }

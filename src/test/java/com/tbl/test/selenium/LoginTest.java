@@ -20,7 +20,7 @@ public class LoginTest extends BasePage {
 
 	@BeforeMethod
 	public void setUp() throws Exception {
-		print("开始执行测试");
+//		#print("开始执行测试");
 		browserType = getValue("BROWSER_TYPE");
 		String url = getValue("URL_OF_NOAH");
 		mainOperation.openMainPage(url);
@@ -153,7 +153,7 @@ public class LoginTest extends BasePage {
 	public void afterClass() throws InterruptedException {
 		print("开始退出并关闭driver");
 		Thread.sleep(1000);
-//		driver.close();
+//		driver.close();		// 单独执行时建议开启，表示执行完毕后关闭浏览器
 //		driver.quit();
 	}
 
